@@ -15,7 +15,7 @@ app = FastAPI(title="FastAPI Backend", version="1.0.0")
 # Configure CORS to allow React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://faceregister-iist.onrender.com"],  # Vite default port and React default
+    allow_origins=["https://iistfaceregister.vercel.app"],  # Vite default port and React default
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
