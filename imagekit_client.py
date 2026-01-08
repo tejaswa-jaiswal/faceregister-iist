@@ -25,8 +25,10 @@ def imagekit_auth():
         )
     
     # Generate token (current timestamp + 1 hour)
+    now = int(time.time())
+
+    expire = now + 300          # ✅ 5 minutes (SAFE)
     token = str(uuid.uuid4()) 
-    expire = int(time.time()) + 3600
     
     # Generate signature using HMAC SHA1
     signature_string = f"{token}{expire}"
