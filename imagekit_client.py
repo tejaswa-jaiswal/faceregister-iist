@@ -6,7 +6,7 @@ import os
 import hmac
 import hashlib
 import time
-
+import uuid
 router = APIRouter()
 
 @router.get("/imagekit-auth")
@@ -25,7 +25,7 @@ def imagekit_auth():
         )
     
     # Generate token (current timestamp + 1 hour)
-    token = str(int(time.time()) + 3600)
+    token = str(uuid.uuid4()) 
     expire = int(time.time()) + 3600
     
     # Generate signature using HMAC SHA1
