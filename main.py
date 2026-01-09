@@ -12,17 +12,20 @@ import os
 
 app = FastAPI(title="FastAPI Backend", version="1.0.0")
 
-# Configure CORS to allow React frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://iistfaceregister.vercel.app"],  # Vite default port and React default
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-key"),
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://iistfaceregister.vercel.app",
+        "http://localhost:5173",   # keep for local dev
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(imagekit_client.router)
