@@ -9,7 +9,7 @@ import time
 import uuid
 router = APIRouter()
 
-@router.get("/imagekit-auth")
+@router.post("/imagekit-auth")
 def imagekit_auth():
     """
     Generate ImageKit authentication parameters for client-side uploads.
@@ -24,10 +24,10 @@ def imagekit_auth():
             content={"error": "IMAGEKIT_PRIVATE_KEY not found in environment variables"}
         )
     
-    # Generate token (current timestamp + 1 hour)
+    
     now = int(time.time())
 
-    expire = now + 600          # ✅ 5 minutes (SAFE)
+    expire = now + 600          
     token = str(uuid.uuid4()) 
 
     # Generate signature using HMAC SHA1
