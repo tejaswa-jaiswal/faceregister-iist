@@ -9,7 +9,7 @@ import time
 import uuid
 router = APIRouter()
 
-@router.post("/imagekit-auth")
+@router.api_route("/imagekit-auth", methods=["GET", "POST"])
 def imagekit_auth():
     """
     Generate ImageKit authentication parameters for client-side uploads.
