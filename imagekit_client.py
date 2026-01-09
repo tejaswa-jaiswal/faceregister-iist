@@ -29,7 +29,7 @@ def imagekit_auth():
 
     expire = now + 600          # ✅ 5 minutes (SAFE)
     token = str(uuid.uuid4()) 
-    
+
     # Generate signature using HMAC SHA1
     signature_string = f"{token}{expire}"
     signature = hmac.new(
@@ -37,9 +37,17 @@ def imagekit_auth():
         signature_string.encode('utf-8'),
         hashlib.sha1
     ).hexdigest()
-    
-    return JSONResponse(content={
+
+    # Debug: print the generated values
+    print(f"[ImageKit Auth] token: {token}, expire: {expire}, signature: {signature}")
+
+    response = JSONResponse(content={
         "token": token,
         "expire": expire,
         "signature": signature
     })
+    # Prevent caching at any proxy, CDN, or browser
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
