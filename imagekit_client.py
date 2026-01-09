@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-from fastapi import APIRouter,Request
+from fastapi import APIRouter,Request,Response
 from fastapi.responses import JSONResponse
 import os
 import hmac
@@ -9,6 +9,9 @@ import time
 import uuid
 router = APIRouter()
 
+@router.options("/imagekit-auth")
+async def imagekit_auth_options():
+    return Response(status_code=200)
 @router.post("/imagekit-auth")
 async def imagekit_auth(request: Request):
     # Disable any cache on server side
