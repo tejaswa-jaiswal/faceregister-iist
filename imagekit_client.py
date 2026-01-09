@@ -9,45 +9,31 @@ import time
 import uuid
 router = APIRouter()
 
-@router.api_route("/imagekit-auth", methods=["GET", "POST"])
-def imagekit_auth():
-    """
-    Generate ImageKit authentication parameters for client-side uploads.
-    Returns token, expire, and signature.
-    ImageKit expects this endpoint to return JSON with token, expire, and signature.
-    """
+@router.post("/imagekit-auth")
+async def imagekit_auth(request: Request):
+    # Disable any cache on server side
+    headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     private_key = os.getenv("IMAGEKIT_PRIVATE_KEY", "")
-    
     if not private_key:
-        return JSONResponse(
-            status_code=500,
-            content={"error": "IMAGEKIT_PRIVATE_KEY not found in environment variables"}
-        )
-    
-    
+        return JSONResponse(status_code=500, content={"error": "IMAGEKIT_PRIVATE_KEY missing"}, headers=headers)
+
     now = int(time.time())
-
-    expire = now + 600          
-    token = str(uuid.uuid4()) 
-
-    # Generate signature using HMAC SHA1
-    signature_string = f"{token}{expire}"
+    expire = now + 600
+    token = str(uuid.uuid4())
     signature = hmac.new(
-        private_key.encode('utf-8'),
-        signature_string.encode('utf-8'),
+        private_key.encode(),
+        f"{token}{expire}".encode(),
         hashlib.sha1
     ).hexdigest()
-
-    # Debug: print the generated values
+    print("---------------------------------------------------------------------------")
     print(f"[ImageKit Auth] token: {token}, expire: {expire}, signature: {signature}")
 
-    response = JSONResponse(content={
-        "token": token,
-        "expire": expire,
-        "signature": signature
-    })
-    # Prevent caching at any proxy, CDN, or browser
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
+    return JSONResponse(
+        content={"token": token, "expire": expire, "signature": signature},
+        headers=headers
+    )
