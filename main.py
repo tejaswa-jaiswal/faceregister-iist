@@ -19,10 +19,7 @@ app.add_middleware(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://iistfaceregister.vercel.app",
-        "http://localhost:5173",   # keep for local dev
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
